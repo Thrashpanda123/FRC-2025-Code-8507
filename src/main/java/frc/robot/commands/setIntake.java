@@ -13,6 +13,7 @@ public class setIntake extends Command {
   Intake intake;
   String mode;
 
+
   public setIntake(Intake i, String m) {
     intake = i;
     mode = m; 

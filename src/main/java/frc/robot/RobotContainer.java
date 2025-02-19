@@ -82,15 +82,16 @@ public class RobotContainer {
   
   private void configureBindings() {
     //arm position configs(dPad)
-    m_driverController.povUp().onTrue(armIntake.andThen(intakeIn.until(() -> sensor.haveCoral())));
+    m_driverController.povUp().onTrue(armIntake);
     m_driverController.povDown().onTrue(armL1);
     m_driverController.povRight().onTrue(armL2);
     m_driverController.povLeft().onTrue(armL3);
     m_driverController.start().onTrue(armStart);
 
     //intake button configs
-    m_driverController.x().onTrue(intakeIn.until(() -> sensor.haveCoral()).andThen(intakeOff));
-    m_driverController.y().onTrue(intakeOut.until(() -> !sensor.haveCoral()).andThen(intakeOff));
+    m_driverController.x().onTrue(intakeIn.until(() -> !sensor.haveCoral()).andThen(intakeOff));
+    m_driverController.y().onTrue(intakeOut);
+    
 
     
     }

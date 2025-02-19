@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @SuppressWarnings("unused")
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final SparkMax intakeMotorTop;
-  private final SparkMax intakeMotorBottom;
+  public final SparkMax intakeMotorTop;
+  public final SparkMax intakeMotorBottom;
 
   private SparkClosedLoopController intakeTopPidController;
   private SparkClosedLoopController intakeBottomPidController;
@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     setVolatgeIn = 5;
-    setVoltageOut = 3.985;
+    setVoltageOut = 5;
 
     intakeMotorTop = new SparkMax(9, MotorType.kBrushed);
     intakeMotorBottom = new SparkMax(10, MotorType.kBrushed);
