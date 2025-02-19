@@ -1,6 +1,6 @@
 {
   "imu": {
-    "type": "navx_mxp_serial",
+    "type": "adis16470",
     "id": 0,
     "canbus": null
   },

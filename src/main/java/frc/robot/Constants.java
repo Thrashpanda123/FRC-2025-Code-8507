@@ -19,6 +19,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double DEADBAND = 0.05;
   }
-
+  public static final int neo_encoder_tick_per_rev = 42;
+  public static final int startPos = 0;
+  public static final int intakePos = -10;
+  public final static double L1_scorePos = 20;
+  public final static double L2_scorePos = 3;
+  public final static double L3_scorePos = 5;
   public static final double MAX_SPEED = Units.feetToMeters(18.84);
 }

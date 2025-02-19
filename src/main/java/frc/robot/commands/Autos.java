@@ -8,6 +8,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+@SuppressWarnings("unused")
 public final class Autos {
   /** Example static factory for an autonomous command. */
   
