@@ -8,8 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.setArm;
 import frc.robot.commands.setIntake;
 import frc.robot.commands.stepArm;
+import frc.robot.commands.climb;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.climber;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Sensors;
@@ -33,6 +35,7 @@ public class RobotContainer {
   private final SwerveSubsystem driveBase = new SwerveSubsystem();
   private final Intake intake = new Intake();
   private final Sensors sensor = new Sensors();
+  private final climber climb = new climber();
 
   
 
@@ -79,7 +82,11 @@ public class RobotContainer {
   private final Command intakeOut = new setIntake(intake, "out");
   private final Command intakeOff = new setIntake(intake, "off");
   
-  
+  //climber commands
+  private final Command raiseArm = new climb(climb, "up");
+  private final Command lowerArm = new climb(climb, "down");
+
+
   private void configureBindings() {
     //arm position configs(dPad)
     m_driverController.povUp().onTrue(armIntake);
@@ -92,6 +99,9 @@ public class RobotContainer {
     m_driverController.x().onTrue(intakeIn.until(() -> !sensor.haveCoral()).andThen(intakeOff));
     m_driverController.y().onTrue(intakeOut);
     
+    //Climber binds
+    m_driverController.rightBumper().onTrue(raiseArm);
+    m_driverController.leftBumper().onTrue(lowerArm);
 
     
     }
