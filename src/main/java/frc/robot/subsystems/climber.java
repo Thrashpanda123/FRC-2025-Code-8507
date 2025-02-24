@@ -15,36 +15,41 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class climber extends SubsystemBase {
-  private final SparkMax climberArm;
+public class Climber extends SubsystemBase {
+  private final SparkMax climberArmLeft, climberArmRight;
 
-  public final RelativeEncoder climbEncoder;
+  public final RelativeEncoder climbEncoderLeft, climbEncoderRight;
 
-  public final SparkClosedLoopController climbArmPidController;
+  public final SparkClosedLoopController climbArmPidControllerRight, climbArmPidControllerLeft;
 
-  private final SparkMaxConfig climbArmConfig;
+  private final SparkMaxConfig climbArmConfigRight, climbArmConfigLeft;
 
   public double kP, kI, kD, kv, kFF, kMaxOutput, kMinOutput;
 
-  public climber() {
-    climberArm = new SparkMax(13, MotorType.kBrushless);
+  public Climber() {
+    climberArmLeft = new SparkMax(13, MotorType.kBrushless);
+    climberArmRight = new SparkMax(13, MotorType.kBrushless);
 
-    climbEncoder = climberArm.getEncoder();
+    climbEncoderLeft = climberArmLeft.getEncoder();
+    climbEncoderRight = climberArmRight.getEncoder();
 
-    climbArmPidController = climberArm.getClosedLoopController();
+    climbArmPidControllerLeft = climberArmLeft.getClosedLoopController();
+    climbArmPidControllerRight = climberArmRight.getClosedLoopController();
 
-    climbArmConfig = new SparkMaxConfig();
+    climbArmConfigLeft = new SparkMaxConfig();
+    climbArmConfigRight = new SparkMaxConfig();
 
     kP = 0.01; 
     kI = 0;
-    kD = .1; 
-    kFF = .01;
+    kD = 1; 
+    kFF = 1;
     kMaxOutput = 1; 
     kMinOutput = -1;
 
-    climbArmConfig.closedLoop
+    climbArmConfigLeft.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(kP)
       .i(kI)
@@ -52,20 +57,43 @@ public class climber extends SubsystemBase {
       .velocityFF(kFF)
       .outputRange(kMinOutput, kMaxOutput);
 
-    climberArm.configure(climbArmConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    climbArmConfigRight.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .p(kP)
+      .i(kI)
+      .d(kD)
+      .velocityFF(kFF)
+      .outputRange(kMinOutput, kMaxOutput);
+
+    climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+  }
+
+  public Command armRaise(){
+    return runOnce(() -> raiseArm());
+  }
+
+  public Command armLower(){
+    return runOnce(() -> lowerArm());
   }
 
   public void lowerArm(){
-    climbArmPidController.setReference(8.4, ControlType.kPosition);
+    climbArmPidControllerLeft.setReference(.5, ControlType.kPosition);
+    climbArmPidControllerRight.setReference(-.5, ControlType.kPosition);
+    //climbArmPidController.setReference(100, ControlType.kVelocity);
   }
 
   public void raiseArm(){
-    climbArmPidController.setReference(0, ControlType.kPosition);
+    climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
+    climbArmPidControllerRight.setReference(0, ControlType.kPosition);
+    //climbArmPidController.setReference(-50, ControlType.kVelocity);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("climb encoder", climbEncoder.getPosition());
+    SmartDashboard.putNumber("climb encoder", climbEncoderLeft.getPosition());
+    SmartDashboard.putNumber("climb encoder", climbEncoderRight.getPosition());
   }
 }

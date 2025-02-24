@@ -5,18 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.climber;
+import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class climb extends Command {
-  climber Climber;
-  String mode;
-  
-  public climb(climber c, String m) {
-    Climber = c;
-    mode = m;
+public class intakeIn extends Command {
+  /** Creates a new setIntake. */
+  Intake intake  ;;
 
-    addRequirements(c);
+
+  public intakeIn(Intake i) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    intake = i;
+
+    addRequirements(i);
+
   }
 
   // Called when the command is initially scheduled.
@@ -26,17 +28,14 @@ public class climb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(mode.equals("up")){
-      Climber.raiseArm();
-    }
-    else if(mode.equals("down")){
-      Climber.lowerArm();
-    }
+    intake.intakeIn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.intakeStop();
+  }
 
   // Returns true when the command should end.
   @Override

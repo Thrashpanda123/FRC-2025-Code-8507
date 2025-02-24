@@ -6,12 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.setArm;
-import frc.robot.commands.setIntake;
-import frc.robot.commands.stepArm;
-import frc.robot.commands.climb;
 import frc.robot.commands.Autos;
+import frc.robot.commands.intakeIn;
+import frc.robot.commands.intakeOut;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.climber;
+import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Sensors;
@@ -35,7 +35,8 @@ public class RobotContainer {
   private final SwerveSubsystem driveBase = new SwerveSubsystem();
   private final Intake intake = new Intake();
   private final Sensors sensor = new Sensors();
-  private final climber climb = new climber();
+  private final Climber climber = new Climber();
+  private final Wrist wrist = new Wrist();
 
   
 
@@ -77,34 +78,32 @@ public class RobotContainer {
   private final Command armL2= new setArm(arm,3);
   private final Command armL3 = new setArm(arm,4);
 
-  //creating intake commands
-  private final Command intakeIn = new setIntake(intake, "in");
-  private final Command intakeOut = new setIntake(intake, "out");
-  private final Command intakeOff = new setIntake(intake, "off");
-  
-  //climber commands
-  private final Command raiseArm = new climb(climb, "up");
-  private final Command lowerArm = new climb(climb, "down");
+  //intake commands
+  private final Command Intake = new intakeIn(intake);
+  private final Command Outtake = new intakeOut(intake);
 
 
-  private void configureBindings() {
+  public void configureBindings() {
     //arm position configs(dPad)
-    m_driverController.povUp().onTrue(armIntake);
-    m_driverController.povDown().onTrue(armL1);
-    m_driverController.povRight().onTrue(armL2);
-    m_driverController.povLeft().onTrue(armL3);
-    m_driverController.start().onTrue(armStart);
+    m_driverController.povUp().onTrue(armIntake.alongWith(wrist.setWristOpen()).andThen(Intake.until(() -> !sensor.haveCoral())));
+    m_driverController.povDown().onTrue(armL3);
+    m_driverController.povRight().onTrue(armL1.alongWith(wrist.setWristClose()));
+    m_driverController.povLeft().onTrue(armL2.alongWith(wrist.setWristClose()));
+    m_driverController.start().onTrue(armStart.alongWith(wrist.setWristOpen()));
 
     //intake button configs
-    m_driverController.x().onTrue(intakeIn.until(() -> !sensor.haveCoral()).andThen(intakeOff));
-    m_driverController.y().onTrue(intakeOut);
+    m_driverController.x().onTrue(Intake.until(() -> !sensor.haveCoral()));
+    m_driverController.y().whileTrue(Outtake.until(() -> sensor.haveCoral()));
     
     //Climber binds
-    m_driverController.rightBumper().onTrue(raiseArm);
-    m_driverController.leftBumper().onTrue(lowerArm);
+    m_driverController.rightBumper().onTrue(climber.armRaise());
+    m_driverController.leftBumper().onTrue(climber.armLower());
 
+    //Wrist binds
+    m_driverController.a().onTrue(wrist.setWristOpen());
+    m_driverController.b().onTrue(wrist.setWristClose());
     
-    }
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

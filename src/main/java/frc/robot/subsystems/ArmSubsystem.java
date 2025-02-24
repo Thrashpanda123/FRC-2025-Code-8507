@@ -51,7 +51,7 @@ public class ArmSubsystem extends SubsystemBase {
     leftMotorConfig = new SparkMaxConfig();
     rightMotorConfig = new SparkMaxConfig();
 
-    kP = 0.001; 
+    kP = 0.01; 
     kI = 0;
     kD = 0; 
     kFF = .1;

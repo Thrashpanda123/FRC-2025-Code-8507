@@ -8,15 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class setIntake extends Command {
-  /** Creates a new setIntake. */
+public class intakeOut extends Command {
+  /** Creates a new intakeOut. */
   Intake intake;
-  String mode;
 
-
-  public setIntake(Intake i, String m) {
+  public intakeOut(Intake i) {
     intake = i;
-    mode = m; 
 
     addRequirements(i);
   }
@@ -28,22 +25,14 @@ public class setIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if(mode.equals("in")){
-      intake.intakeIn();
-    }
-    else if(mode.equals("out")){
-      intake.intakeOut();
-    }
-    else if(mode.equals("off")){
-      intake.intakeStop();
-    }
-
+    intake.intakeOut();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.intakeStop();
+  }
 
   // Returns true when the command should end.
   @Override
