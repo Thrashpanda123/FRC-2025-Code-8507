@@ -106,7 +106,11 @@ public class ArmSubsystem extends SubsystemBase {
     } else if(level == 4) {
       armRight_pidController.setReference(Constants.L3_scorePos, ControlType.kPosition);
       armLeft_pidController.setReference(-Constants.L3_scorePos, ControlType.kPosition);
+    } else if(level == 5){
+      armRight_pidController.setReference(Constants.L2_scorePos+.5, ControlType.kPosition);
+      armLeft_pidController.setReference(-Constants.L2_scorePos+.5, ControlType.kPosition);
     }
+
   }
 
   public boolean isIntakePos(){

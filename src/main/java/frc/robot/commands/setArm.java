@@ -40,6 +40,8 @@ public class setArm extends Command {
       arm.setLevel(2);
     else if(Level == 3)
       arm.setLevel(3);
+    else if(Level == 5)
+      arm.setLevel(5);
     else
       arm.setLevel(0);
 

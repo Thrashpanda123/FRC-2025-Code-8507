@@ -77,6 +77,7 @@ public class RobotContainer {
   private final Command armL1 = new setArm(arm,2);
   private final Command armL2= new setArm(arm,3);
   private final Command armL3 = new setArm(arm,4);
+  private final Command score = new setArm(arm, 5);
 
   //intake commands
   private final Command Intake = new intakeIn(intake);
@@ -86,10 +87,11 @@ public class RobotContainer {
   public void configureBindings() {
     //arm position configs(dPad)
     m_driverController.povUp().onTrue(armIntake.alongWith(wrist.setWristOpen()).andThen(Intake.until(() -> !sensor.haveCoral())));
-    m_driverController.povDown().onTrue(armL3);
+    //m_driverController.povDown().onTrue(armL3);
     m_driverController.povRight().onTrue(armL1.alongWith(wrist.setWristClose()));
     m_driverController.povLeft().onTrue(armL2.alongWith(wrist.setWristClose()));
     m_driverController.start().onTrue(armStart.alongWith(wrist.setWristOpen()));
+    m_driverController.povDown().onTrue(score.andThen(Intake.until(() -> sensor.haveCoral())));
 
     //intake button configs
     m_driverController.x().onTrue(Intake.until(() -> !sensor.haveCoral()));
