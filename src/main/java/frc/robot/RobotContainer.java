@@ -42,7 +42,17 @@ public class RobotContainer {
   private final Climber climber = new Climber();
   private final Wrist wrist = new Wrist();
 
-  
+  //creating arm position commands
+  private final Command armStart = new setArm(arm,0);
+  private final Command armIntake = new setArm(arm,1);
+  private final Command armL1 = new setArm(arm,2);
+  private final Command armL2= new setArm(arm,3);
+  private final Command armL3 = new setArm(arm,4);
+  private final Command score = new setArm(arm, 5);
+
+  //intake commands
+  private final Command Intake = new intakeIn(intake);
+  private final Command Outtake = new intakeOut(intake);
 
 
   private final CommandXboxController m_driverController =
@@ -58,6 +68,16 @@ public class RobotContainer {
 
     driveBase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     NamedCommands.registerCommand("name", Commands.print("I exist"));
+    NamedCommands.registerCommand("Intake", Intake);
+    NamedCommands.registerCommand("Outtake", Outtake);
+    NamedCommands.registerCommand("armL1", armL1);
+    NamedCommands.registerCommand("armStart", armStart);
+    NamedCommands.registerCommand("armL2", armL2);
+    NamedCommands.registerCommand("armIntake", armIntake);
+    NamedCommands.registerCommand("WristOpen", wrist.setWristOpen());
+    NamedCommands.registerCommand("WristClosed", wrist.setWristClose());
+
+
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(driveBase.getSwerveDrive(),
@@ -77,19 +97,7 @@ public class RobotContainer {
 
   Command driveFieldOrientedAngularVelocity = driveBase.driveFieldOriented(driveAngularVelocity);
 
-  //creating arm position commands
-  private final Command armStart = new setArm(arm,0);
-  private final Command armIntake = new setArm(arm,1);
-  private final Command armL1 = new setArm(arm,2);
-  private final Command armL2= new setArm(arm,3);
-  private final Command armL3 = new setArm(arm,4);
-  private final Command score = new setArm(arm, 5);
-
-  //intake commands
-  private final Command Intake = new intakeIn(intake);
-  private final Command Outtake = new intakeOut(intake);
-
-
+  
   public void configureBindings() {
     //arm position configs(dPad)
     m_driverController.povDown().onTrue(armIntake.alongWith(wrist.setWristOpen()));
@@ -121,4 +129,5 @@ public class RobotContainer {
     return driveBase.getAutonomousCommand("New Auto");
   }
 }
+
 
