@@ -16,8 +16,12 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Sensors;
 import swervelib.SwerveInputStream;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -51,7 +55,9 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
+
     driveBase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    NamedCommands.registerCommand("name", Commands.print("I exist"));
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(driveBase.getSwerveDrive(),
@@ -86,24 +92,23 @@ public class RobotContainer {
 
   public void configureBindings() {
     //arm position configs(dPad)
-    m_driverController.povUp().onTrue(armIntake.alongWith(wrist.setWristOpen()).andThen(Intake.until(() -> !sensor.haveCoral())));
-    //m_driverController.povDown().onTrue(armL3);
-    m_driverController.povRight().onTrue(armL1.alongWith(wrist.setWristClose()));
-    m_driverController.povLeft().onTrue(armL2.alongWith(wrist.setWristClose()));
+    m_driverController.povDown().onTrue(armIntake.alongWith(wrist.setWristOpen()));
+    m_driverController.povRight().onTrue(score.alongWith(wrist.setWristClose()));
+    m_driverController.povUp().onTrue(armL1.alongWith(wrist.setWristOpen()));
+    m_driverController.povLeft().onTrue(armL2);
     m_driverController.start().onTrue(armStart.alongWith(wrist.setWristOpen()));
-    m_driverController.povDown().onTrue(score.andThen(Intake.until(() -> sensor.haveCoral())));
 
     //intake button configs
     m_driverController.x().onTrue(Intake.until(() -> !sensor.haveCoral()));
-    m_driverController.y().whileTrue(Outtake.until(() -> sensor.haveCoral()));
+    m_driverController.y().whileTrue(Outtake);
     
     //Climber binds
     m_driverController.rightBumper().onTrue(climber.armRaise());
     m_driverController.leftBumper().onTrue(climber.armLower());
 
     //Wrist binds
-    m_driverController.a().onTrue(wrist.setWristOpen());
-    m_driverController.b().onTrue(wrist.setWristClose());
+    m_driverController.b().onTrue(wrist.setWristOpen());
+    m_driverController.a().onTrue(wrist.setWristClose());
     
   }
 
@@ -112,6 +117,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  
+  public Command getAutonomousCommand() {
+    return driveBase.getAutonomousCommand("New Auto");
   }
+}
 

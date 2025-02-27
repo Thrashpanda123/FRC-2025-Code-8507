@@ -93,7 +93,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void setLevel(int level) {
     if(level == 0) {
       armRight_pidController.setReference(Constants.startPos, ControlType.kPosition);
-      armLeft_pidController.setReference(Constants.startPos, ControlType.kPosition);
+      armLeft_pidController.setReference(-Constants.startPos, ControlType.kPosition);
     } else if(level == 1){
       armRight_pidController.setReference(Constants.intakePos, ControlType.kPosition);
       armLeft_pidController.setReference(-Constants.intakePos, ControlType.kPosition);
@@ -107,8 +107,8 @@ public class ArmSubsystem extends SubsystemBase {
       armRight_pidController.setReference(Constants.L3_scorePos, ControlType.kPosition);
       armLeft_pidController.setReference(-Constants.L3_scorePos, ControlType.kPosition);
     } else if(level == 5){
-      armRight_pidController.setReference(Constants.L2_scorePos+.5, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.L2_scorePos+.5, ControlType.kPosition);
+      armRight_pidController.setReference(Constants.score, ControlType.kPosition);
+      armLeft_pidController.setReference(-Constants.score, ControlType.kPosition);
     }
 
   }

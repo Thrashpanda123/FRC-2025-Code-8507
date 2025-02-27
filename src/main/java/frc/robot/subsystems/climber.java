@@ -13,7 +13,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,9 +29,11 @@ public class Climber extends SubsystemBase {
 
   public double kP, kI, kD, kv, kFF, kMaxOutput, kMinOutput;
 
+  public ArmSubsystem arm;
+
   public Climber() {
     climberArmLeft = new SparkMax(13, MotorType.kBrushless);
-    climberArmRight = new SparkMax(13, MotorType.kBrushless);
+    climberArmRight = new SparkMax(14, MotorType.kBrushless);
 
     climbEncoderLeft = climberArmLeft.getEncoder();
     climbEncoderRight = climberArmRight.getEncoder();
@@ -79,14 +81,14 @@ public class Climber extends SubsystemBase {
   }
 
   public void lowerArm(){
-    climbArmPidControllerLeft.setReference(.5, ControlType.kPosition);
-    climbArmPidControllerRight.setReference(-.5, ControlType.kPosition);
+    climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
+    climbArmPidControllerRight.setReference(0, ControlType.kPosition);
     //climbArmPidController.setReference(100, ControlType.kVelocity);
   }
 
   public void raiseArm(){
-    climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
-    climbArmPidControllerRight.setReference(0, ControlType.kPosition);
+      climbArmPidControllerLeft.setReference(-1, ControlType.kPosition);
+      climbArmPidControllerRight.setReference(-1, ControlType.kPosition);
     //climbArmPidController.setReference(-50, ControlType.kVelocity);
   }
 
