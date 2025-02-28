@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.003433098591549,
-        "y": 6.207570422535212
+        "x": 7.360450819672131,
+        "y": 6.15
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.857011317534783,
-        "y": 5.715547556205708
+        "x": 6.213611241931064,
+        "y": 5.657797823118701
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.43,
-        "y": 5.655
+        "x": 5.454405737704918,
+        "y": 5.625358606557377
       },
       "prevControl": {
-        "x": 6.109595962208236,
-        "y": 5.798758488602985
+        "x": 6.134001699913155,
+        "y": 5.769117095160362
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,43 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "armL1",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "armL1"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "WristClosed"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Outtake",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Outtake"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -78,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.26477372789235
+    "rotation": -118.73979529168805
   },
   "reversed": false,
   "folder": null,

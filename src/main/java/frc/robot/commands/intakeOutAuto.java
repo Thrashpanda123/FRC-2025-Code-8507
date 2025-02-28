@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class intakeOut extends Command {
+public class intakeOutAuto extends Command {
   /** Creates a new intakeOut. */
   Intake intake;
+  private boolean finished = false;
 
-  public intakeOut(Intake i) {
+  public intakeOutAuto(Intake i) {
     intake = i;
 
     addRequirements(i);
@@ -25,6 +26,18 @@ public class intakeOut extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    finished = false;
+
+    TimerTask task = new TimerTask() {
+      public void run() {
+        finished = true;
+      }
+    };
+
+    Timer timer = new Timer();
+
+    timer.schedule(task, 1000);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,6 +55,6 @@ public class intakeOut extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

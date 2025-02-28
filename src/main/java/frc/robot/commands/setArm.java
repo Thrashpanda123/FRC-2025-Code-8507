@@ -16,6 +16,7 @@ public class setArm extends Command {
   /** Creates a new ArmControl. */
   ArmSubsystem arm;
   int Level = 0;
+  boolean isFinished = false;
 
   public setArm(ArmSubsystem a, int level) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,14 +35,30 @@ public class setArm extends Command {
   public void execute() {
     if(Level == 0)
       arm.setLevel(0);
-    else if(Level == 1)
+    else if(Level == 1){
       arm.setLevel(1);
-    else if(Level == 2)
+      if(arm.armRight_encoder.getPosition() > 190 && arm.armRight_encoder.getPosition() < 205){
+        isFinished = true;
+      }
+    }
+    else if(Level == 2){
       arm.setLevel(2);
-    else if(Level == 3)
+      if(arm.armRight_encoder.getPosition() > 117 && arm.armRight_encoder.getPosition() < 130){
+          isFinished = true;
+      }
+    }
+    else if(Level == 3){
       arm.setLevel(3);
-    else if(Level == 5)
+      if(arm.armRight_encoder.getPosition() > 50 && arm.armRight_encoder.getPosition() < 60){
+        isFinished = true;
+      }
+    }
+    else if(Level == 5){
       arm.setLevel(5);
+      if(arm.armRight_encoder.getPosition() > 82 && arm.armRight_encoder.getPosition() < 92){
+        isFinished = true;
+      }
+    }
     else
       arm.setLevel(0);
 
@@ -56,6 +73,6 @@ public class setArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }

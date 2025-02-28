@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Climber extends SubsystemBase {
+public class climber extends SubsystemBase {
   private final SparkMax climberArmLeft, climberArmRight;
 
   public final RelativeEncoder climbEncoderLeft, climbEncoderRight;
@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
 
   public ArmSubsystem arm;
 
-  public Climber() {
+  public climber() {
     climberArmLeft = new SparkMax(13, MotorType.kBrushless);
     climberArmRight = new SparkMax(14, MotorType.kBrushless);
 
@@ -81,8 +81,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void lowerArm(){
-    climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
-    climbArmPidControllerRight.setReference(0, ControlType.kPosition);
+    climbArmPidControllerLeft.setReference(-.01, ControlType.kPosition);
+    climbArmPidControllerRight.setReference(-.01, ControlType.kPosition);
     //climbArmPidController.setReference(100, ControlType.kVelocity);
   }
 
