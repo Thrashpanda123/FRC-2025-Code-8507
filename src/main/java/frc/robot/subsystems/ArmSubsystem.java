@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -27,7 +28,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final SparkMax armRight;
   
   public RelativeEncoder armLeft_encoder;
-  public RelativeEncoder armRight_encoder;
+  public AbsoluteEncoder armRight_encoder;
   
   private SparkClosedLoopController armLeft_pidController;
   private SparkClosedLoopController armRight_pidController;
@@ -43,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
     armRight = new SparkMax(12, MotorType.kBrushless);
 
     armLeft_encoder = armLeft.getEncoder();
-    armRight_encoder = armRight.getEncoder();
+    armRight_encoder = armRight.getAbsoluteEncoder();
 
     armRight_pidController = armRight.getClosedLoopController();
     armLeft_pidController = armLeft.getClosedLoopController();
@@ -51,14 +52,14 @@ public class ArmSubsystem extends SubsystemBase {
     leftMotorConfig = new SparkMaxConfig();
     rightMotorConfig = new SparkMaxConfig();
 
-    kP = 0.01; 
+    kP = 4; 
     kI = 0;
     kD = 0; 
     kFF = .1;
     kMaxOutput = 1; 
     kMinOutput = -1;
     
-    leftMotorConfig.closedLoop
+    leftMotorConfig.closedLoop 
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .p(kP)
       .i(kI)
@@ -67,15 +68,15 @@ public class ArmSubsystem extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
 
     rightMotorConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .p(kP)
       .i(kI)
       .d(kD)
       .velocityFF(kFF)
       .outputRange(kMinOutput, kMaxOutput);
     
-    armLeft.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    armRight.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    armLeft.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    armRight.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public double getRightPosition(){
