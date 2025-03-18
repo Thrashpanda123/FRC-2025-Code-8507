@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.AbsoluteEncoder;
@@ -27,10 +28,10 @@ public class ArmSubsystem extends SubsystemBase {
   private final SparkMax armLeft;
   private final SparkMax armRight;
   
-  public RelativeEncoder armLeft_encoder;
+  //public AbsoluteEncoder armLeft_encoder;
   public AbsoluteEncoder armRight_encoder;
   
-  private SparkClosedLoopController armLeft_pidController;
+  //private SparkClosedLoopController armLeft_pidController;
   private SparkClosedLoopController armRight_pidController;
 
   private SparkMaxConfig rightMotorConfig;
@@ -43,11 +44,11 @@ public class ArmSubsystem extends SubsystemBase {
     armLeft = new SparkMax(11, MotorType.kBrushless);
     armRight = new SparkMax(12, MotorType.kBrushless);
 
-    armLeft_encoder = armLeft.getEncoder();
+    //armLeft_encoder = armLeft.getAbsoluteEncoder();
     armRight_encoder = armRight.getAbsoluteEncoder();
 
     armRight_pidController = armRight.getClosedLoopController();
-    armLeft_pidController = armLeft.getClosedLoopController();
+    //armLeft_pidController = armLeft.getClosedLoopController();
 
     leftMotorConfig = new SparkMaxConfig();
     rightMotorConfig = new SparkMaxConfig();
@@ -59,22 +60,25 @@ public class ArmSubsystem extends SubsystemBase {
     kMaxOutput = 1; 
     kMinOutput = -1;
     
+    /*
     leftMotorConfig.closedLoop 
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .p(kP)
-      .i(kI)
-      .d(kD)
-      .velocityFF(kFF)
+      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+      .pid(kP,kI,kD)
       .outputRange(kMinOutput, kMaxOutput);
+    */
+    rightMotorConfig
+      .idleMode(IdleMode.kBrake)
+      .inverted(false);
 
     rightMotorConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .p(kP)
-      .i(kI)
-      .d(kD)
-      .velocityFF(kFF)
+      .pid(kP,kI,kD)
       .outputRange(kMinOutput, kMaxOutput);
     
+    leftMotorConfig
+      .idleMode(IdleMode.kBrake)
+      .follow(armLeft, true); 
+
     armLeft.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     armRight.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -83,39 +87,37 @@ public class ArmSubsystem extends SubsystemBase {
     return armRight_encoder.getPosition();
   }
 
+  /*
   public double getLeftPosition(){
     return armLeft_encoder.getPosition();
   }
+  */
 
-  public void step(double stepAmount){
-    armRight_pidController.setReference(-stepAmount, ControlType.kPosition);
-    armLeft_pidController.setReference(stepAmount, ControlType.kPosition);
-  }
   public void setLevel(int level) {
     if(level == 0) {
       armRight_pidController.setReference(Constants.startPos, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.startPos, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.startPos, ControlType.kPosition);
     } else if(level == 1){
       armRight_pidController.setReference(Constants.intakePos, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.intakePos, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.intakePos, ControlType.kPosition);
     }else if(level == 2) {
       armRight_pidController.setReference(Constants.L1_scorePos, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.L1_scorePos, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.L1_scorePos, ControlType.kPosition);
     } else if(level == 3) {
       armRight_pidController.setReference(Constants.L2_scorePos, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.L2_scorePos, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.L2_scorePos, ControlType.kPosition);
     } else if(level == 4) {
       armRight_pidController.setReference(Constants.L3_scorePos, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.L3_scorePos, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.L3_scorePos, ControlType.kPosition);
     } else if(level == 5){
       armRight_pidController.setReference(Constants.score, ControlType.kPosition);
-      armLeft_pidController.setReference(-Constants.score, ControlType.kPosition);
+      //armLeft_pidController.setReference(-Constants.score, ControlType.kPosition);
     }
 
   }
 
   public boolean isIntakePos(){
-    if(armLeft_encoder.getPosition() == 1200 && armRight_encoder.getPosition() == -1200)
+    if(armRight_encoder.getPosition() == Constants.intakePos)
       return true;
     else
       return false;
@@ -123,8 +125,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("leftEncoder", getLeftPosition());
-    SmartDashboard.putNumber("rightEncoder", getRightPosition());
+    //SmartDashboard.putNumber("leftEncoder", getLeftPosition());
+    //SmartDashboard.putNumber("rightEncoder", getRightPosition());
   }
 
   @Override

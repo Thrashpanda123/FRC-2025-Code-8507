@@ -7,9 +7,6 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.setArm;
 import frc.robot.commands.Autos;
-import frc.robot.commands.intakeIn;
-import frc.robot.commands.intakeOut;
-import frc.robot.commands.intakeOutAuto;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.climber;
@@ -19,11 +16,17 @@ import frc.robot.subsystems.Sensors;
 import swervelib.SwerveInputStream;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.EventMarker;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -45,23 +48,26 @@ public class RobotContainer {
 
   //creating arm position commands
   private final Command armStart = new setArm(arm,0);
-  private final Command armIntake = new setArm(arm,1);
-  private final Command armL1 = new setArm(arm,2);
+  private final Command armIntake = new ParallelCommandGroup(new setArm(arm,1), new InstantCommand(wrist::setWristOpen), new InstantCommand(intake::intakeIn));
+  private final Command armL1 = new ParallelCommandGroup(new setArm(arm,2),new InstantCommand(wrist::setWristOpen));
   private final Command armL2= new setArm(arm,3);
   private final Command armL3 = new setArm(arm,4);
   private final Command score = new setArm(arm, 5);
 
   //intake commands
-  private final Command Intake = new intakeIn(intake);
-  private final Command Outtake = new intakeOut(intake);
+  private final Command Intake = new InstantCommand(intake::intakeIn);
+  private final Command Outtake = new InstantCommand(intake::intakeOut);
+  private final Command OuttakeAuto = new SequentialCommandGroup( new InstantCommand(intake::intakeOut), new WaitCommand(1.5), new InstantCommand(intake::intakeStop));
+
+  //climb commands
+  private final Command climbUp = new SequentialCommandGroup(new setArm(arm, 1), new InstantCommand(climber::armRaise));
+  private final Command climbDown = new InstantCommand(climber::armLower);
 
 
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   @SuppressWarnings("unused")
-  private final XboxController mController = 
-      new XboxController(OperatorConstants.kDriverControllerPort);
+  private final XboxController mController = new XboxController(OperatorConstants.kDriverControllerPort);
 
 
   public RobotContainer() {
@@ -69,15 +75,16 @@ public class RobotContainer {
 
     driveBase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     NamedCommands.registerCommand("name", Commands.print("I exist"));
-    NamedCommands.registerCommand("Intake",  new intakeIn(intake));
-    NamedCommands.registerCommand("Outtake", Commands.sequence(Commands.runOnce(() -> intake.intakeOut()), Commands.waitSeconds(1), Commands.runOnce(() -> intake.intakeStop())));
+    NamedCommands.registerCommand("Intake",  Intake);
+    //NamedCommands.registerCommand("Outtake", Commands.sequence(Commands.runOnce(() -> intake.intakeOut()), Commands.waitSeconds(1), Commands.runOnce(() -> intake.intakeStop())));
+    NamedCommands.registerCommand("Outtake", OuttakeAuto);
     NamedCommands.registerCommand("armL1", armL1);
     NamedCommands.registerCommand("armStart", armStart);
     NamedCommands.registerCommand("armL2", armL2);
     NamedCommands.registerCommand("armIntake", armIntake);
     NamedCommands.registerCommand("WristOpen", wrist.setWristOpen());
     NamedCommands.registerCommand("WristClosed", wrist.setWristClose());
-
+    new EventTrigger("Intake Coral").onTrue(Intake);
 
   }
 
@@ -101,9 +108,9 @@ public class RobotContainer {
   
   public void configureBindings() {
     //arm position configs(dPad)
-    m_driverController.povDown().onTrue(armIntake.alongWith(wrist.setWristOpen()));
-    m_driverController.povRight().onTrue(score.alongWith(wrist.setWristClose()));
-    m_driverController.povUp().onTrue(armL1.alongWith(wrist.setWristOpen()));
+    m_driverController.povDown().onTrue(armIntake);
+    //m_driverController.povRight().onTrue(score.alongWith(wrist.setWristClose()));
+    m_driverController.povUp().onTrue(armL1);
     m_driverController.povLeft().onTrue(armL2);
     m_driverController.start().onTrue(armStart.alongWith(wrist.setWristOpen()));
 
@@ -112,13 +119,19 @@ public class RobotContainer {
     m_driverController.y().whileTrue(Outtake);
     
     //Climber binds
-    m_driverController.rightBumper().onTrue(climber.armRaise());
-    m_driverController.leftBumper().onTrue(climber.armLower());
+    m_driverController.rightBumper().onTrue(climbUp);
+    m_driverController.leftBumper().onTrue(climbDown);
 
     //Wrist binds
     m_driverController.b().onTrue(wrist.setWristOpen());
     m_driverController.a().onTrue(wrist.setWristClose());
     
+  }
+
+  public void robotContainerPerodic() {
+    SmartDashboard.putNumber("Arm Encoder Position", arm.getRightPosition());
+    SmartDashboard.putBoolean("Climb State", climber.armUp());
+    SmartDashboard.putBoolean("Have Coral?",  sensor.haveCoral());
   }
 
   /**

@@ -9,19 +9,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Sensors extends SubsystemBase {
   public final DigitalInput intakeSensor;
-  private final DigitalInput armLowLimit;
   public Sensors() {
     intakeSensor = new DigitalInput(0);
-    armLowLimit = new DigitalInput(1);
   }
 
 
   public boolean haveCoral(){
     if(intakeSensor.get()){
-      return true;
+      return false;
     }
     else{
-      return false;
+      return true;
     }
   }
   @Override

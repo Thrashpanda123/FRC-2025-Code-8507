@@ -12,8 +12,10 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import frc.robot.subsystems.ArmSubsystem;
+
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,9 +23,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class climber extends SubsystemBase {
   private final SparkMax climberArmLeft, climberArmRight;
 
-  public final RelativeEncoder climbEncoderLeft, climbEncoderRight;
+  public final RelativeEncoder climbEncoderLeft;
 
-  public final SparkClosedLoopController climbArmPidControllerRight, climbArmPidControllerLeft;
+  public final SparkClosedLoopController climbArmPidControllerLeft;
 
   private final SparkMaxConfig climbArmConfigRight, climbArmConfigLeft;
 
@@ -36,10 +38,10 @@ public class climber extends SubsystemBase {
     climberArmRight = new SparkMax(14, MotorType.kBrushless);
 
     climbEncoderLeft = climberArmLeft.getEncoder();
-    climbEncoderRight = climberArmRight.getEncoder();
+    //climbEncoderRight = climberArmRight.getEncoder();
 
     climbArmPidControllerLeft = climberArmLeft.getClosedLoopController();
-    climbArmPidControllerRight = climberArmRight.getClosedLoopController();
+    //climbArmPidControllerRight = climberArmRight.getClosedLoopController();
 
     climbArmConfigLeft = new SparkMaxConfig();
     climbArmConfigRight = new SparkMaxConfig();
@@ -50,22 +52,27 @@ public class climber extends SubsystemBase {
     kFF = 1;
     kMaxOutput = 1; 
     kMinOutput = -1;
+    
+    climbArmConfigLeft
+      .idleMode(IdleMode.kBrake)
+      .inverted(true);
 
     climbArmConfigLeft.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .p(kP)
-      .i(kI)
-      .d(kD)
-      .velocityFF(kFF)
+      .pid(kP, kI, kD)
+      //.velocityFF(kFF)
       .outputRange(kMinOutput, kMaxOutput);
 
+    climbArmConfigRight
+      .idleMode(IdleMode.kBrake)
+      .follow(climberArmLeft, true);
+    /*
     climbArmConfigRight.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .p(kP)
-      .i(kI)
-      .d(kD)
-      .velocityFF(kFF)
+      .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+      .pid(kP,kI,kD)
+      //.velocityFF(kFF)
       .outputRange(kMinOutput, kMaxOutput);
+    */
 
     climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -81,21 +88,34 @@ public class climber extends SubsystemBase {
   }
 
   public void lowerArm(){
-    climbArmPidControllerLeft.setReference(-.01, ControlType.kPosition);
-    climbArmPidControllerRight.setReference(-.01, ControlType.kPosition);
+    climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
+    //climbArmPidControllerRight.setReference(0, ControlType.kPosition);
     //climbArmPidController.setReference(100, ControlType.kVelocity);
   }
 
   public void raiseArm(){
-      climbArmPidControllerLeft.setReference(-1, ControlType.kPosition);
-      climbArmPidControllerRight.setReference(-1, ControlType.kPosition);
+    if(arm.getRightPosition() != Constants.startPos){
+      climbArmPidControllerLeft.setReference(1, ControlType.kPosition);
+      //climbArmPidControllerRight.setReference(1, ControlType.kPosition);
+    }
     //climbArmPidController.setReference(-50, ControlType.kVelocity);
+    else{
+      climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
+      //climbArmPidControllerRight.setReference(0, ControlType.kPosition);
+    }
+  }
+
+  public boolean armUp(){
+    if(climbEncoderLeft.getPosition() == 42)
+      return true;
+    else  
+      return false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("climb encoder", climbEncoderLeft.getPosition());
-    SmartDashboard.putNumber("climb encoder", climbEncoderRight.getPosition());
+    //SmartDashboard.putNumber("climb encoder", climbEncoderRight.getPosition());
   }
 }

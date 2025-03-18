@@ -61,9 +61,6 @@ public class setArm extends Command {
     }
     else
       arm.setLevel(0);
-
-    SmartDashboard.putNumber("Left Encoder Position", arm.armLeft_encoder.getPosition());
-    SmartDashboard.putNumber("Right Encoder Position", arm.armRight_encoder.getPosition());
   }
 
   // Called once the command ends or is interrupted.

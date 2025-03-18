@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -21,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @SuppressWarnings("unused")
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
+  private final Sensors sensor = new Sensors();
+
   public final SparkMax intakeMotorTop;
   public final SparkMax intakeMotorBottom;
 
@@ -38,12 +41,13 @@ public class Intake extends SubsystemBase {
   private double setVolatgeIn; private double setVoltageOut;
 
   public Intake() {
-    setVolatgeIn = 5;
-    setVoltageOut = 5;
+
+    //setVolatgeIn = 5;
+    //setVoltageOut = 5;
 
     intakeMotorTop = new SparkMax(9, MotorType.kBrushed);
     intakeMotorBottom = new SparkMax(10, MotorType.kBrushed);
-
+    /*
     intakeTopPidController = intakeMotorTop.getClosedLoopController();
     intakeBottomPidController = intakeMotorBottom.getClosedLoopController();
 
@@ -77,7 +81,14 @@ public class Intake extends SubsystemBase {
       .d(kD)
       .velocityFF(kFF)
       .outputRange(kMinOutput, kMaxOutput);
+    */
+    intakeMotorBottomConfig
+      .idleMode(IdleMode.kCoast)
+      .inverted(false);
 
+    intakeMotorTopConfig
+      .idleMode(IdleMode.kCoast)
+      .inverted(false);
     
     intakeMotorTop.configure(intakeMotorTopConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     intakeMotorBottom.configure(intakeMotorBottomConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -85,18 +96,24 @@ public class Intake extends SubsystemBase {
 
 
   public void intakeIn(){
-    intakeTopPidController.setReference(-setVolatgeIn, ControlType.kVoltage);
-    intakeBottomPidController.setReference(-setVolatgeIn, ControlType.kVoltage);
+    if(!sensor.haveCoral()){
+      intakeMotorTop.set(.6);
+      intakeMotorBottom.set(.6);
+    }
+    else{
+      intakeMotorTop.set(0);
+      intakeMotorBottom.set(0);
+    }
   }
 
   public void intakeOut(){
-    intakeTopPidController.setReference(setVoltageOut, ControlType.kVoltage);
-    intakeBottomPidController.setReference(setVoltageOut, ControlType.kVoltage);
+    intakeMotorTop.set(-.6);
+    intakeMotorBottom.set(-.6);
   }
 
   public void intakeStop(){
-    intakeTopPidController.setReference(0, ControlType.kVoltage);
-    intakeBottomPidController.setReference(0, ControlType.kVoltage);
+    intakeMotorTop.stopMotor();
+    intakeMotorBottom.stopMotor();
   }
 
   @Override
