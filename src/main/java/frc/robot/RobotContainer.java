@@ -12,6 +12,8 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.climber;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.intakeIn;
+import frc.robot.commands.intakeOut;
 import frc.robot.subsystems.Sensors;
 import swervelib.SwerveInputStream;
 
@@ -48,15 +50,15 @@ public class RobotContainer {
 
   //creating arm position commands
   private final Command armStart = new setArm(arm,0);
-  private final Command armIntake = new ParallelCommandGroup(new setArm(arm,1), new InstantCommand(wrist::setWristOpen), new InstantCommand(intake::intakeIn));
-  private final Command armL1 = new ParallelCommandGroup(new setArm(arm,2),new InstantCommand(wrist::setWristOpen));
+  private final Command armIntake = new ParallelCommandGroup(new setArm(arm,1), new InstantCommand(wrist::setWristClose), new InstantCommand(intake::intakeIn));
+  private final Command armL1 = new ParallelCommandGroup(new setArm(arm,2),new InstantCommand(wrist::setWristClose));
   private final Command armL2= new setArm(arm,3);
   private final Command armL3 = new setArm(arm,4);
   private final Command score = new setArm(arm, 5);
 
   //intake commands
-  private final Command Intake = new InstantCommand(intake::intakeIn);
-  private final Command Outtake = new InstantCommand(intake::intakeOut);
+  private final Command Intake = new intakeIn(intake);
+  private final Command Outtake = new intakeOut(intake);
   private final Command OuttakeAuto = new SequentialCommandGroup( new InstantCommand(intake::intakeOut), new WaitCommand(1.5), new InstantCommand(intake::intakeStop));
 
   //climb commands
@@ -115,7 +117,7 @@ public class RobotContainer {
     m_driverController.start().onTrue(armStart.alongWith(wrist.setWristOpen()));
 
     //intake button configs
-    m_driverController.x().onTrue(Intake.until(() -> !sensor.haveCoral()));
+    m_driverController.x().onTrue(Intake.until(() -> sensor.haveCoral()));
     m_driverController.y().whileTrue(Outtake);
     
     //Climber binds

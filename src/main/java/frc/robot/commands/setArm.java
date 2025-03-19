@@ -37,25 +37,25 @@ public class setArm extends Command {
       arm.setLevel(0);
     else if(Level == 1){
       arm.setLevel(1);
-      if(arm.armRight_encoder.getPosition() > 190 && arm.armRight_encoder.getPosition() < 205){
+      if(arm.armRight_encoder.getPosition() == Constants.intakePos){
         isFinished = true;
       }
     }
     else if(Level == 2){
       arm.setLevel(2);
-      if(arm.armRight_encoder.getPosition() > 117 && arm.armRight_encoder.getPosition() < 130){
+      if(arm.armRight_encoder.getPosition() == Constants.L1_scorePos){
           isFinished = true;
       }
     }
     else if(Level == 3){
       arm.setLevel(3);
-      if(arm.armRight_encoder.getPosition() > 50 && arm.armRight_encoder.getPosition() < 60){
+      if(arm.armRight_encoder.getPosition() == Constants.L2_scorePos){
         isFinished = true;
       }
     }
     else if(Level == 5){
       arm.setLevel(5);
-      if(arm.armRight_encoder.getPosition() > 82 && arm.armRight_encoder.getPosition() < 92){
+      if(arm.armRight_encoder.getPosition() == Constants.score){
         isFinished = true;
       }
     }

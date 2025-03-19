@@ -74,8 +74,8 @@ public class climber extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
     */
 
-    climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 

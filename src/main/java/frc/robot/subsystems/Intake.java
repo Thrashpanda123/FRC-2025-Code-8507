@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import frc.robot.subsystems.Sensors;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 @SuppressWarnings("unused")
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final Sensors sensor = new Sensors();
+
 
   public final SparkMax intakeMotorTop;
   public final SparkMax intakeMotorBottom;
@@ -41,12 +42,15 @@ public class Intake extends SubsystemBase {
   private double setVolatgeIn; private double setVoltageOut;
 
   public Intake() {
-
+    
     //setVolatgeIn = 5;
     //setVoltageOut = 5;
 
     intakeMotorTop = new SparkMax(9, MotorType.kBrushed);
     intakeMotorBottom = new SparkMax(10, MotorType.kBrushed);
+
+    intakeMotorTopConfig = new SparkMaxConfig();
+    intakeMotorBottomConfig = new SparkMaxConfig();
     /*
     intakeTopPidController = intakeMotorTop.getClosedLoopController();
     intakeBottomPidController = intakeMotorBottom.getClosedLoopController();
@@ -54,8 +58,6 @@ public class Intake extends SubsystemBase {
     intakeMotorTopEncoder = intakeMotorTop.getEncoder();
     intakeMotorBottomEncoder = intakeMotorBottom.getEncoder();
 
-    intakeMotorTopConfig = new SparkMaxConfig();
-    intakeMotorBottomConfig = new SparkMaxConfig();
 
     kP = .002; 
     kI = 0;
@@ -84,31 +86,25 @@ public class Intake extends SubsystemBase {
     */
     intakeMotorBottomConfig
       .idleMode(IdleMode.kCoast)
-      .inverted(false);
+      .inverted(true);
 
     intakeMotorTopConfig
       .idleMode(IdleMode.kCoast)
-      .inverted(false);
+      .inverted(true);
     
-    intakeMotorTop.configure(intakeMotorTopConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    intakeMotorBottom.configure(intakeMotorBottomConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    intakeMotorTop.configure(intakeMotorTopConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakeMotorBottom.configure(intakeMotorBottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 
   public void intakeIn(){
-    if(!sensor.haveCoral()){
-      intakeMotorTop.set(.6);
-      intakeMotorBottom.set(.6);
-    }
-    else{
-      intakeMotorTop.set(0);
-      intakeMotorBottom.set(0);
-    }
+    intakeMotorTop.set(.4);
+    intakeMotorBottom.set(.4);
   }
 
   public void intakeOut(){
-    intakeMotorTop.set(-.6);
-    intakeMotorBottom.set(-.6);
+    intakeMotorTop.set(-.4);
+    intakeMotorBottom.set(-.4);
   }
 
   public void intakeStop(){

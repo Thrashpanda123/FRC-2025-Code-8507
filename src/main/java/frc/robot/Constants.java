@@ -20,9 +20,9 @@ public final class Constants {
     public static final double DEADBAND = 0.06;
   }
   public static final int neo_encoder_tick_per_rev = 42;
-  public static final double startPos = 0;
+  public static final double startPos = .1;
   public static final double intakePos = .5;
-  public final static double L1_scorePos = .35;
+  public final static double L1_scorePos = .2;
   public final static double L2_scorePos = .25;
   public final static double L3_scorePos = .15;
   public final static double score = .3;

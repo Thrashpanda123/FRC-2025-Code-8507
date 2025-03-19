@@ -53,10 +53,9 @@ public class ArmSubsystem extends SubsystemBase {
     leftMotorConfig = new SparkMaxConfig();
     rightMotorConfig = new SparkMaxConfig();
 
-    kP = 4; 
+    kP = 2; 
     kI = 0;
     kD = 0; 
-    kFF = .1;
     kMaxOutput = 1; 
     kMinOutput = -1;
     
@@ -77,7 +76,7 @@ public class ArmSubsystem extends SubsystemBase {
     
     leftMotorConfig
       .idleMode(IdleMode.kBrake)
-      .follow(armLeft, true); 
+      .follow(armRight, true); 
 
     armLeft.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     armRight.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -127,6 +126,9 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     //SmartDashboard.putNumber("leftEncoder", getLeftPosition());
     //SmartDashboard.putNumber("rightEncoder", getRightPosition());
+    if(armRight_encoder.getPosition() < 0){
+      
+    }
   }
 
   @Override
