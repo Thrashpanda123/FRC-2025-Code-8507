@@ -17,6 +17,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.subsystems.Sensors;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -85,11 +86,11 @@ public class Intake extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
     */
     intakeMotorBottomConfig
-      .idleMode(IdleMode.kCoast)
+      .idleMode(IdleMode.kBrake)
       .inverted(true);
 
     intakeMotorTopConfig
-      .idleMode(IdleMode.kCoast)
+      .idleMode(IdleMode.kBrake)
       .inverted(true);
     
     intakeMotorTop.configure(intakeMotorTopConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -98,13 +99,13 @@ public class Intake extends SubsystemBase {
 
 
   public void intakeIn(){
-    intakeMotorTop.set(.4);
-    intakeMotorBottom.set(.4);
+    intakeMotorTop.set(.55);
+    intakeMotorBottom.set(.55);
   }
 
   public void intakeOut(){
-    intakeMotorTop.set(-.4);
-    intakeMotorBottom.set(-.4);
+    intakeMotorTop.set(-.55);
+    intakeMotorBottom.set(-.55);
   }
 
   public void intakeStop(){

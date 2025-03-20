@@ -12,16 +12,14 @@ import frc.robot.subsystems.ArmSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 @SuppressWarnings("unused")
-public class setArm extends Command {
+public class homingSequence extends Command {
   /** Creates a new ArmControl. */
   ArmSubsystem arm;
-  int Level = 0;
   boolean isFinished = false;
 
-  public setArm(ArmSubsystem a, int level) {
+  public homingSequence(ArmSubsystem a) {
     // Use addRequirements() here to declare subsystem dependencies.
     arm = a;
-    Level = level;
 
     addRequirements(a);
   }
@@ -33,34 +31,7 @@ public class setArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Level == 0)
-      arm.setLevel(0);
-    else if(Level == 1){
-      arm.setLevel(1);
-      if(arm.armRight_encoder.getPosition() < Constants.intakePos + 3 && arm.armRight_encoder.getPosition() > Constants.intakePos - 3){
-        isFinished = true;
-      }
-    }
-    else if(Level == 2){
-      arm.setLevel(2);
-      if(arm.armRight_encoder.getPosition() < Constants.L1_scorePos + 3 && arm.armRight_encoder.getPosition() > Constants.L1_scorePos - 3){
-          isFinished = true;
-      }
-    }
-    else if(Level == 3){
-      arm.setLevel(3);
-      if(arm.armRight_encoder.getPosition() < Constants.L2_scorePos + 3 && arm.armRight_encoder.getPosition() > Constants.L2_scorePos - 3){
-        isFinished = true;
-      }
-    }
-    else if(Level == 5){
-      arm.setLevel(5);
-      if(arm.armRight_encoder.getPosition() < Constants.score + 3 && arm.armRight_encoder.getPosition() > Constants.score - 3){
-        isFinished = true;
-      }
-    }
-    else
-      arm.setLevel(0);
+    arm.homingSequence();
   }
 
   // Called once the command ends or is interrupted.

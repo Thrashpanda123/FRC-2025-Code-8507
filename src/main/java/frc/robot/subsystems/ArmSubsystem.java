@@ -26,10 +26,10 @@ import frc.robot.Constants;
 @SuppressWarnings("unused")
 public class ArmSubsystem extends SubsystemBase {
   private final SparkMax armLeft;
-  private final SparkMax armRight;
+  public final SparkMax armRight;
   
   //public AbsoluteEncoder armLeft_encoder;
-  public AbsoluteEncoder armRight_encoder;
+  public RelativeEncoder armRight_encoder;
   
   //private SparkClosedLoopController armLeft_pidController;
   private SparkClosedLoopController armRight_pidController;
@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
     armRight = new SparkMax(12, MotorType.kBrushless);
 
     //armLeft_encoder = armLeft.getAbsoluteEncoder();
-    armRight_encoder = armRight.getAbsoluteEncoder();
+    armRight_encoder = armRight.getEncoder();
 
     armRight_pidController = armRight.getClosedLoopController();
     //armLeft_pidController = armLeft.getClosedLoopController();
@@ -53,7 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
     leftMotorConfig = new SparkMaxConfig();
     rightMotorConfig = new SparkMaxConfig();
 
-    kP = 2; 
+    kP = .1; 
     kI = 0;
     kD = 0; 
     kMaxOutput = 1; 
@@ -70,7 +70,7 @@ public class ArmSubsystem extends SubsystemBase {
       .inverted(false);
 
     rightMotorConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(kP,kI,kD)
       .outputRange(kMinOutput, kMaxOutput);
     
@@ -115,6 +115,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
+  public void homingSequence(){
+    armRight.set(-.12);
+  }
+
   public boolean isIntakePos(){
     if(armRight_encoder.getPosition() == Constants.intakePos)
       return true;
@@ -124,11 +128,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //SmartDashboard.putNumber("leftEncoder", getLeftPosition());
-    //SmartDashboard.putNumber("rightEncoder", getRightPosition());
-    if(armRight_encoder.getPosition() < 0){
-      
-    }
+    SmartDashboard.putNumber("Arm Encoder Position", getRightPosition());
   }
 
   @Override

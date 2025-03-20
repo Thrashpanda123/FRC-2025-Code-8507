@@ -5,12 +5,15 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Sensors extends SubsystemBase {
   public final DigitalInput intakeSensor;
+  public final DigitalInput HomingLimit;
   public Sensors() {
     intakeSensor = new DigitalInput(0);
+    HomingLimit = new DigitalInput(1);
   }
 
 
@@ -22,8 +25,19 @@ public class Sensors extends SubsystemBase {
       return true;
     }
   }
+
+  public boolean isHomed(){
+    if(!HomingLimit.get()){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Homing limit switch", isHomed());
+    SmartDashboard.putBoolean("Have Coral?", haveCoral());
   }
 }

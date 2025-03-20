@@ -46,9 +46,9 @@ public class climber extends SubsystemBase {
     climbArmConfigLeft = new SparkMaxConfig();
     climbArmConfigRight = new SparkMaxConfig();
 
-    kP = 0.01; 
+    kP = .1; 
     kI = 0;
-    kD = 1; 
+    kD = 0; 
     kFF = 1;
     kMaxOutput = 1; 
     kMinOutput = -1;
@@ -65,7 +65,7 @@ public class climber extends SubsystemBase {
 
     climbArmConfigRight
       .idleMode(IdleMode.kBrake)
-      .follow(climberArmLeft, true);
+      .follow(climberArmLeft, false);
     /*
     climbArmConfigRight.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
@@ -74,8 +74,8 @@ public class climber extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
     */
 
-    climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climberArmLeft.configure(climbArmConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    climberArmRight.configure(climbArmConfigRight, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
   }
 
@@ -94,15 +94,7 @@ public class climber extends SubsystemBase {
   }
 
   public void raiseArm(){
-    if(arm.getRightPosition() != Constants.startPos){
-      climbArmPidControllerLeft.setReference(1, ControlType.kPosition);
-      //climbArmPidControllerRight.setReference(1, ControlType.kPosition);
-    }
-    //climbArmPidController.setReference(-50, ControlType.kVelocity);
-    else{
-      climbArmPidControllerLeft.setReference(0, ControlType.kPosition);
-      //climbArmPidControllerRight.setReference(0, ControlType.kPosition);
-    }
+    climbArmPidControllerLeft.setReference(100, ControlType.kPosition);
   }
 
   public boolean armUp(){
@@ -115,7 +107,7 @@ public class climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Climb State", armUp());
     SmartDashboard.putNumber("climb encoder", climbEncoderLeft.getPosition());
-    //SmartDashboard.putNumber("climb encoder", climbEncoderRight.getPosition());
   }
 }
