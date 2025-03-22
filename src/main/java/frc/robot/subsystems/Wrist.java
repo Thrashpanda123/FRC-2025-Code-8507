@@ -22,11 +22,11 @@ public class Wrist extends SubsystemBase{
     }
 
     public Command setWristOpen() {
-        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kReverse));
+        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kForward));
     }
    
     public Command setWristClose() {
-        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kForward));
+        return runOnce(() -> solenoid.set(DoubleSolenoid.Value.kReverse));
 }
     
 @Override

@@ -96,8 +96,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  public void driveFieldOriented(ChassisSpeeds velocity){
-    swerveDrive.driveFieldOriented(velocity);
+  public void driveFieldOriented(int velocity){
   }
 
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){

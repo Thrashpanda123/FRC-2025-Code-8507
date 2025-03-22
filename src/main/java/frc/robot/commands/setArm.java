@@ -28,7 +28,9 @@ public class setArm extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    isFinished = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -37,25 +39,25 @@ public class setArm extends Command {
       arm.setLevel(0);
     else if(Level == 1){
       arm.setLevel(1);
-      if(arm.armRight_encoder.getPosition() < Constants.intakePos + 3 && arm.armRight_encoder.getPosition() > Constants.intakePos - 3){
+      if(arm.armRight_encoder.getPosition() < Constants.intakePos + 1 && arm.armRight_encoder.getPosition() > Constants.intakePos - 1){
         isFinished = true;
       }
     }
     else if(Level == 2){
       arm.setLevel(2);
-      if(arm.armRight_encoder.getPosition() < Constants.L1_scorePos + 3 && arm.armRight_encoder.getPosition() > Constants.L1_scorePos - 3){
+      if(arm.armRight_encoder.getPosition() < Constants.L1_scorePos + 1 && arm.armRight_encoder.getPosition() > Constants.L1_scorePos - 1){
           isFinished = true;
       }
     }
     else if(Level == 3){
       arm.setLevel(3);
-      if(arm.armRight_encoder.getPosition() < Constants.L2_scorePos + 3 && arm.armRight_encoder.getPosition() > Constants.L2_scorePos - 3){
+      if(arm.armRight_encoder.getPosition() < Constants.L2_scorePos + 1 && arm.armRight_encoder.getPosition() > Constants.L2_scorePos - 1){
         isFinished = true;
       }
     }
     else if(Level == 5){
       arm.setLevel(5);
-      if(arm.armRight_encoder.getPosition() < Constants.score + 3 && arm.armRight_encoder.getPosition() > Constants.score - 3){
+      if(arm.armRight_encoder.getPosition() < Constants.score + 1 && arm.armRight_encoder.getPosition() > Constants.score - 1){
         isFinished = true;
       }
     }

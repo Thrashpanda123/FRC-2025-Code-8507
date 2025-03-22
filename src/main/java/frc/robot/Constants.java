@@ -20,11 +20,12 @@ public final class Constants {
     public static final double DEADBAND = 0.06;
   }
   public static final int neo_encoder_tick_per_rev = 42;
-  public static final double startPos = 0.5;
+  public static final double startPos = 0;
   public static final double intakePos = 210;
   public final static double L1_scorePos = 130;
-  public final static double L2_scorePos = 85;
+  public final static double L2_scorePos = 75;
   public final static double L3_scorePos = 2;
-  public final static double score = 95;
+  //public final static double score = 95;
+  public final static double score = 110;
   public static final double MAX_SPEED = Units.feetToMeters(18.84);
 }

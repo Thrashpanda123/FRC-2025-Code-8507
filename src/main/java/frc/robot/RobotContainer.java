@@ -52,7 +52,7 @@ public class RobotContainer {
   //intake commands
   private final Command Intake = new intakeIn(intake);
   private final Command Outtake = new intakeOut(intake);
-  private final Command OuttakeAuto = new SequentialCommandGroup( new InstantCommand(intake::intakeOut), new WaitCommand(1.5), new InstantCommand(intake::intakeStop));
+  private final Command OuttakeAuto = new SequentialCommandGroup( new InstantCommand(intake::intakeOut), new WaitCommand(.2), new InstantCommand(intake::intakeStop));
 
   //creating arm position commands
   private final Command armStart = new setArm(arm,0);
@@ -114,13 +114,14 @@ public class RobotContainer {
   public void configureBindings() {
     //arm position configs(dPad)
     m_driverController.povDown().onTrue(armIntake);
-    m_driverController.povRight().onTrue(score.alongWith(wrist.setWristClose()));
+    m_driverController.povRight().onTrue(score);
     m_driverController.povUp().onTrue(armL1);
     m_driverController.povLeft().onTrue(armL2);
     m_driverController.start().onTrue(homingSequence.until(() -> sensor.isHomed()));
+    //m_driverController.start().onTrue(armStart);
 
     //intake button configs
-    m_driverController.x().onTrue(Intake.until(() -> sensor.haveCoral()));
+    m_driverController.x().whileTrue(Intake.until(() -> sensor.haveCoral()));
     m_driverController.y().whileTrue(Outtake);
     
     //Climber binds
@@ -141,8 +142,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return driveBase.getAutonomousCommand("New Auto");
+    return driveBase.getAutonomousCommand("Blue Middle");
   }
 }
-
 
