@@ -21,7 +21,7 @@ public final class Constants {
   }
   public static final int neo_encoder_tick_per_rev = 42;
   public static final double startPos = 0;
-  public static final double intakePos = 210;
+  public static final double intakePos = 202.5;
   public final static double L1_scorePos = 130;
   public final static double L2_scorePos = 75;
   public final static double L3_scorePos = 2;

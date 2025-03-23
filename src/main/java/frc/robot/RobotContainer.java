@@ -16,6 +16,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.commands.intakeIn;
 import frc.robot.commands.intakeOut;
 import frc.robot.subsystems.Sensors;
+import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -94,8 +95,8 @@ public class RobotContainer {
   }
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(driveBase.getSwerveDrive(),
-                                                                () -> m_driverController.getLeftY() * 1,
-                                                                () -> m_driverController.getLeftX() * -1)
+                                                                () -> m_driverController.getLeftY() * -1,
+                                                                () -> m_driverController.getLeftX() * 1)
                                                                 .withControllerRotationAxis(m_driverController::getRightX)
                                                                 .deadband(OperatorConstants.DEADBAND)
                                                                 .scaleTranslation(0.5)
@@ -131,6 +132,9 @@ public class RobotContainer {
     //Wrist binds
     m_driverController.b().onTrue(wrist.setWristOpen());
     m_driverController.a().onTrue(wrist.setWristClose());
+
+    //Zero gyro
+    m_driverController.back().onTrue((Commands.runOnce(driveBase.getSwerveDrive()::zeroGyro)));
     
   }
 

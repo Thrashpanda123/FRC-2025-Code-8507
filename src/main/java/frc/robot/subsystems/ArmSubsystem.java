@@ -56,8 +56,8 @@ public class ArmSubsystem extends SubsystemBase {
     kP = .1; 
     kI = 0;
     kD = 0; 
-    kMaxOutput = 1; 
-    kMinOutput = -1;
+    kMaxOutput = .75; 
+    kMinOutput = -.75;
     
     /*
     leftMotorConfig.closedLoop 
