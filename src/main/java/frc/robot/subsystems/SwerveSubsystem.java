@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants;
 
 import java.io.File;
@@ -56,6 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     setupPathPlanner();
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
   }
 
   /**
@@ -96,7 +99,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  public void driveFieldOriented(int velocity){
+  public void driveFieldOriented(ChassisSpeeds velocity){
+    swerveDrive.driveFieldOriented(velocity);
   }
 
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity){
@@ -106,6 +110,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
     public void setupPathPlanner()
+    
   {
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -124,15 +129,14 @@ public class SwerveSubsystem extends SubsystemBase {
           swerveDrive::getRobotVelocity,
           // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
-            if (enableFeedforward)
-            {
+            if (enableFeedforward){
               swerveDrive.drive(
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
                   moduleFeedForwards.linearForces()
                                );
-            } else
-            {
+            } 
+            else{
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
           },
@@ -152,8 +156,7 @@ public class SwerveSubsystem extends SubsystemBase {
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
             var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent())
-            {
+            if (alliance.isPresent()){
               return alliance.get() == DriverStation.Alliance.Red;
             }
             return false;
@@ -162,13 +165,45 @@ public class SwerveSubsystem extends SubsystemBase {
           // Reference to this subsystem to set requirements
                            );
 
-    } catch (Exception e)
-    {
+    } 
+    catch (Exception e){
       // Handle exception as needed
       e.printStackTrace();
     }
 
   }
+
+  public void resetOdometry(Pose2d initialHolonomicPose){
+    swerveDrive.resetOdometry(initialHolonomicPose);
+  }
+
+  public Pose2d getPose(){
+    return swerveDrive.getPose();
+  }
+
+  public void zeroGyro(){
+    swerveDrive.zeroGyro();
+  }
+
+  private boolean isRedAlliance(){
+    var alliance = DriverStation.getAlliance();
+    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+  }
+
+  public void zeroGyroWithAlliance()
+  {
+    if (isRedAlliance()){
+      zeroGyro();
+      //Set the pose 180 degrees
+      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+    } 
+    else{
+      zeroGyro();
+    }
+  }
+
+
+
   /**
    * Get the path follower with events.
    *

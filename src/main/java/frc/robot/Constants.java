@@ -16,7 +16,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int driver1Controller = 0;
+    public static final int driver2Controller = 1;
     public static final double DEADBAND = 0.06;
   }
   public static final int neo_encoder_tick_per_rev = 42;
