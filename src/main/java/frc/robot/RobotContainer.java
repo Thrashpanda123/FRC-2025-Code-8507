@@ -109,7 +109,7 @@ public class RobotContainer {
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(driveBase.getSwerveDrive(),
                                                                 () -> driver1Controller.getLeftY() * -1,
-                                                                () -> driver1Controller.getLeftX() * -1)
+                                                                () -> driver1Controller.getLeftX() * 1)
                                                                 .withControllerRotationAxis(driver1Controller::getRightX)
                                                                 .deadband(OperatorConstants.DEADBAND)
                                                                 .scaleTranslation(0.5)
@@ -147,7 +147,7 @@ public class RobotContainer {
     driver2Controller.a().onTrue(wrist.setWristClose());
 
     //Zero gyro
-    driver1Controller.back().onTrue((Commands.runOnce(driveBase::zeroGyro)));
+    driver1Controller.back().onTrue((Commands.runOnce(driveBase::zeroGyroWithAlliance)));
     
   }
 
