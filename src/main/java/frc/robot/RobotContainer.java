@@ -18,6 +18,8 @@ import frc.robot.commands.intakeOut;
 import frc.robot.subsystems.Sensors;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
+import frc.robot.subsystems.Vision.Cameras;
+
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -71,6 +73,7 @@ public class RobotContainer {
   //climb commands
   private final Command climbUp = new InstantCommand(climber::raiseArm);
   private final Command climbDown = new InstantCommand(climber::lowerArm);
+  
 
   //creat both controllers
   private final CommandXboxController driver1Controller = new CommandXboxController(OperatorConstants.driver1Controller);
@@ -127,27 +130,29 @@ public class RobotContainer {
   
   public void configureBindings() {
     //arm position configs(dPad)
-    driver2Controller.povDown().onTrue(armIntake);
-    driver2Controller.povRight().onTrue(score);
-    driver2Controller.povUp().onTrue(armL1);
-    driver2Controller.povLeft().onTrue(armL2);
-    driver2Controller.start().onTrue(homingSequence.until(() -> sensor.isHomed()));
+    //driver2Controller.povDown().onTrue(armIntake);
+    //driver2Controller.povRight().onTrue(score);
+    //driver2Controller.povUp().onTrue(armL1);
+    //driver2Controller.povLeft().onTrue(armL2);
+    //driver2Controller.start().onTrue(homingSequence.until(() -> sensor.isHomed()));
     //m_driverController.start().onTrue(armStart);
 
     //intake button configs
-    driver2Controller.x().whileTrue(Intake.until(() -> sensor.haveCoral()));
-    driver2Controller.y().whileTrue(Outtake);
+    //driver2Controller.x().whileTrue(Intake.until(() -> sensor.haveCoral()));
+    //driver2Controller.y().whileTrue(Outtake);
     
     //Climber binds
-    driver2Controller.rightBumper().onTrue(climbUp);
-    driver2Controller.leftBumper().onTrue(climbDown);
+    //driver2Controller.rightBumper().onTrue(climbUp);
+    //driver2Controller.leftBumper().onTrue(climbDown);
 
     //Wrist binds
-    driver2Controller.b().onTrue(wrist.setWristOpen());
-    driver2Controller.a().onTrue(wrist.setWristClose());
+    //driver2Controller.b().onTrue(wrist.setWristOpen());
+    //driver2Controller.a().onTrue(wrist.setWristClose());
 
     //Zero gyro
     driver1Controller.back().onTrue((Commands.runOnce(driveBase::zeroGyroWithAlliance)));
+
+    driver1Controller.a().onTrue((Commands.runOnce(driveBase::aimAtTarget(CENTER_CAM))));
     
   }
 

@@ -28,5 +28,5 @@ public final class Constants {
   public final static double L3_scorePos = 2;
   //public final static double score = 95;
   public final static double score = 110;
-  public static final double MAX_SPEED = Units.feetToMeters(18.84);
+  public static final double MAX_SPEED = Units.feetToMeters(17);
 }
