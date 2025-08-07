@@ -152,7 +152,7 @@ public class RobotContainer {
     //Zero gyro
     driver1Controller.back().onTrue((Commands.runOnce(driveBase::zeroGyroWithAlliance)));
 
-    driver1Controller.a().onTrue((Commands.runOnce(driveBase::aimAtTarget(CENTER_CAM))));
+    driver1Controller.a().onTrue(Commands.runOnce(() -> driveBase.aimAtTarget(Cameras.Swerve_Cam_Left)));
     
   }
 
